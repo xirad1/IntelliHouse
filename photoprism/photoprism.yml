@@ -122,6 +122,7 @@ services:
     volumes:
       # "/host/folder:/photoprism/folder"                # Example
       - "/share/Public/ZDJECIA:/photoprism/originals"               # Original media files (DO NOT REMOVE)
+      - "/share/homes/daria/testphotod:/photoprism/daria"               # User home folder
       # - "/example/family:/photoprism/originals/family" # *Additional* media folders can be mounted like this
       # - "~/Import:/photoprism/import"                  # *Optional* base folder from which files can be imported to originals
       #- "./storage:/photoprism/storage"                  # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
