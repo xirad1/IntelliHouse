@@ -1,6 +1,8 @@
 # IntelliHouse
 ## General
 ### Extract git repository to /opt on your server 
+There are several ways to extract repository. As a result files should be placed in /opt/IntelliHouse. If you change it please adjust individual files. 
+
 #### Option via HTTPS
 ```sh
     cd /opt
@@ -23,18 +25,18 @@
 Adjust according your needs
 
 ## WordPress
-Assumption: both files exist in the `/opt/wordpress/` folder — `Dockerfile` and `wordpress.yml`.
+Assumption: both files exist in the `/opt/IntelliHouse/wordpress/` folder — `Dockerfile` and `wordpress.yml`.
 
 1. Build the image from the `wordpress/` directory:
 
-    ```sh
-    docker build -t wordpress:ldap /opt/wordpress
-    ```
+```sh
+    docker build -t wordpress:ldap /opt/IntelliHouse/wordpress
+```
 
 2. Start container with Docker Compose:
 
-    ```sh
+```sh
     docker compose -f /opt/wordpress/wordpress.yml up -d
-    ```
+```
 
 The stack will start with WordPress running the php-ldap module.
