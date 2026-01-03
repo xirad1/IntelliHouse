@@ -65,10 +65,12 @@ echo -e "\n${BOLD}Last 20 dmesg lines (kernel messages):${RESET}"
 dmesg | tail -20
 
 # 5. Check I/O / mmc errors
-mmc_err_count=$(dmesg | grep -i mmc | wc -l)
+mmc_lines=$(dmesg | grep -iE 'mmc|mmcblk|sdio')
+mmc_err=$(echo "$mmc_lines" | grep -iE 'error|fail|timeout|crc|reset|io error|i/o')
+mmc_err_count=$(echo "$mmc_err" | sed '/^\s*$/d' | wc -l)
 if [ "$mmc_err_count" -gt 0 ]; then
     echo -e "\n${RED}MMC / SD errors detected (${mmc_err_count}):${RESET}"
-    dmesg | grep -i mmc | tail -10
+    echo "$mmc_err" | tail -20
 else
     echo -e "\n${GREEN}MMC / SD errors: none${RESET}"
 fi
