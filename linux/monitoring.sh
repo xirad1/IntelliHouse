@@ -9,7 +9,7 @@ BLUE='\033[0;34m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
-echo -e "${BOLD}================== BananaPi M3 Monitor ==================${RESET}"
+echo -e "\n\n${BOLD}==================================== BananaPi M3 Monitor ($(date '+%Y-%m-%d %H:%M:%S')) ====================================${RESET}"
 # 1. Uptime
 echo -n "Uptime: "
 uptime -p
