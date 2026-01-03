@@ -75,13 +75,21 @@ else
     echo -e "\n${GREEN}MMC / SD errors: none${RESET}"
 fi
 
-# 6. Check watchdog (should be empty because it's disabled)
-wdog_count=$(dmesg | grep -i watchdog | wc -l)
-if [ "$wdog_count" -gt 0 ]; then
-    echo -e "\n${YELLOW}Watchdog messages detected (${wdog_count}):${RESET}"
-    dmesg | grep -i watchdog | tail -10
+# 6. Check watchdog (flag only real issues)
+wdog_all=$(dmesg | grep -i watchdog)
+wdog_err=$(echo "$wdog_all" | grep -iE 'timeout|expired|reset|pretimeout|panic|bug|harddog|trigger')
+wdog_err_count=$(echo "$wdog_err" | sed '/^\s*$/d' | wc -l)
+if [ "$wdog_err_count" -gt 0 ]; then
+    echo -e "\n${RED}Watchdog errors detected (${wdog_err_count}):${RESET}"
+    echo "$wdog_err" | tail -20
 else
-    echo -e "\n${GREEN}Watchdog: no messages${RESET}"
+    if echo "$wdog_all" | grep -qi 'enabled'; then
+        echo -e "\n${BLUE}Watchdog: enabled (no errors)${RESET}"
+    elif dmesg | grep -qi 'nowatchdog\|disabled'; then
+        echo -e "\n${GREEN}Watchdog: disabled${RESET}"
+    else
+        echo -e "\n${GREEN}Watchdog: no error messages${RESET}"
+    fi
 fi
 
 # 7. Free disk space
