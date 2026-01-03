@@ -16,6 +16,7 @@ There are several ways to extract repository. As a result files should be placed
     ssh root@192.168.170.30
     cd .ssh
     chmod 600 xirad_github_id_rsa
+    
     ssh-add ~/.ssh/xirad_github_id_rsa
     Identity added: /root/.ssh/xirad_github_id_rsa (xirad_github)
     ssh -T git@github.com
@@ -23,6 +24,13 @@ There are several ways to extract repository. As a result files should be placed
 ```
 
 Adjust according your needs
+
+## Linux
+### Monitoring
+Add to crontab line similar to:
+```sh
+5 * * * * sh /opt/IntelliHouse/linux/monitoring.sh >> /opt/IntelliHouse/linux/monitoring.log 2>&1
+```
 
 ## WordPress
 Assumption: both files exist in the `/opt/IntelliHouse/wordpress/` folder — `Dockerfile` and `wordpress.yml`.
