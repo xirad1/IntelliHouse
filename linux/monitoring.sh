@@ -77,7 +77,9 @@ fi
 
 # 6. Check watchdog (flag only real issues)
 wdog_all=$(dmesg | grep -i watchdog)
-wdog_err=$(echo "$wdog_all" | grep -iE 'timeout|expired|reset|pretimeout|panic|bug|harddog|trigger')
+# Flag only real error-like events; avoid config lines like "enabled" or "timeout=..."
+wdog_err_raw=$(echo "$wdog_all" | grep -iE 'expired|reset|pretimeout|panic|bug|harddog|trigger|timed out')
+wdog_err=$(echo "$wdog_err_raw" | grep -viE 'enabled|timeout=')
 wdog_err_count=$(echo "$wdog_err" | sed '/^\s*$/d' | wc -l)
 if [ "$wdog_err_count" -gt 0 ]; then
     echo -e "\n${RED}Watchdog errors detected (${wdog_err_count}):${RESET}"
