@@ -44,7 +44,7 @@ Assumption: both files exist in the `/opt/IntelliHouse/wordpress/` folder — `D
 2. Start container with Docker Compose:
 
 ```sh
-    docker compose -f /opt/wordpress/wordpress.yml up -d
+    docker compose -f /opt/IntelliHouse/wordpress/wordpress.yml up -d
 ```
 
 The stack will start with WordPress running the php-ldap module.
