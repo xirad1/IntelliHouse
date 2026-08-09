@@ -1,7 +1,8 @@
 # PLAN.md
 
 Living work plan for the IntelliHouse repository. Update it with every significant change —
-check off completed tasks, add new ones, don't delete history (the "Done" section at the bottom).
+check off completed tasks in place (`- [x]`), add new ones. No separate "Done"/archive section — once a
+task is checked off, it stays checked off here; longer-form decision history lives in `LEARNINGS.md`.
 
 ## Current state (snapshot)
 
@@ -21,7 +22,10 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 
 ### Documentation / structure
 - [ ] Add Home Assistant and nginx sections to `README.md` once their directories exist.
-- [ ] Consider adding a `.env.example` per service as a template for new deployments.
+- [x] Add a `.env.example` per service — added to `immich/`, `nextcloud/`, `wordpress/`, `xwiki/` with
+      placeholder values named after the service itself (e.g. `xwiki`, `postgres`), for plain
+      `docker compose` (SSH + CLI) use only; not applicable to QNAP Container Station's "Application"
+      wizard. Added a root `.gitignore` so any real `.env` copied from these templates is never committed.
 
 ### New services to onboard into the repo
 - [ ] Create the `home-assistant/` directory (Raspberry Pi) — configure per the convention in `CLAUDE.md`.

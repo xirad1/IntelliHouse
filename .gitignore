@@ -1,0 +1,3 @@
+# Real secret values — never commit these. Only .env.example templates are tracked.
+.env
+*/.env
