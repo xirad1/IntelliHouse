@@ -17,7 +17,7 @@ not hardcoded for one specific piece of hardware.
 
 | Host               | Role                                    | Directory(ies) in repo                          |
 |--------------------|------------------------------------------|-------------------------------------------------|
-| QNAP TS-364        | Main host, Container Station (Docker)   | `immich/`, `nextcloud/`, `photoprism/`, `wordpress/`, `xwiki/` |
+| QNAP TS-364        | Main host, Container Station (Docker)   | `immich/`, `nextcloud/`, `wordpress/`, `xwiki/` |
 | Raspberry Pi       | Home Assistant OS                       | not yet created — to be added (e.g. `home-assistant/`) |
 | BananaPi           | nginx (reverse proxy) + `linux/monitoring.sh` | `linux/` (monitoring script), directory for nginx to be created (e.g. `nginx/`) |
 
@@ -48,7 +48,7 @@ More hosts may be added in the future — do not design solutions "for QNAP" onl
 ## Secrets and security (important)
 
 - **Known issue:** some existing `.yml` files contain hardcoded plaintext passwords
-  (e.g. `nextcloud/nextcloud.yml`, `photoprism/photoprism.yml`, `wordpress/wordpress.yml`), and these
+  (e.g. `nextcloud/nextcloud.yml`, `wordpress/wordpress.yml`), and these
   are already part of the git history. This is technical debt to pay down — see [PLAN.md](PLAN.md).
 - **Do not hardcode** new secrets in `.yml` files. Use variables from a `.env` file via compose
   interpolation (`${MY_VARIABLE}`) and add `.env` to `.gitignore`.
@@ -100,7 +100,7 @@ anything typed there must be treated as compromised and rotated.
 
 - All files in this repository are written in English — keep this language for operational files
   (README, comments in `.yml`) as well as meta/planning files (`CLAUDE.md`, `PLAN.md`, `LEARNINGS.md`).
-- Do not remove existing comments linking to upstream documentation (e.g. in `photoprism/photoprism.yml`) —
+- Do not remove existing comments linking to upstream documentation in compose files —
   those are intentionally kept references to the official source-of-truth configs.
 
 ## What not to do

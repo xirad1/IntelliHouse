@@ -16,6 +16,29 @@ problem was, what worked/didn't work, and what to remember for the future.
 
 ---
 
+### 2026-08-09 — PhotoPrism decommission completed
+- Context: follow-up to the decision below to drop PhotoPrism in favor of Immich.
+- Problem: `photoprism/` still existed in the repo and in `CLAUDE.md`'s host table after the owner
+  removed the PhotoPrism containers/volumes directly on QNAP.
+- Solution / decision: removed the `photoprism/` directory from the repo, removed it from the host table
+  and secrets examples in `CLAUDE.md`, removed its row from the status table in `PLAN.md`, and moved the
+  decommission checklist to "Done". Password rotation for the credentials that were in
+  `photoprism/photoprism.yml` remains an open security backlog item, since those passwords are still in
+  git history even after the file's removal.
+- Takeaway: removing a file from the working tree does not remove secrets from git history — track
+  credential rotation as a separate, explicit backlog item even after a service's files are deleted.
+
+### 2026-08-09 — Decided to decommission PhotoPrism in favor of Immich
+- Context: both PhotoPrism and Immich were running side by side on QNAP TS-364 as photo-management solutions.
+- Problem: running two overlapping photo-management stacks is extra maintenance/security surface for no
+  added benefit; the owner decided Immich currently is the better solution.
+- Solution / decision: PhotoPrism marked as deprecated in `PLAN.md`, with a decommission checklist added
+  (verify Immich covers PhotoPrism's photo libraries, back up `photoprism_db_data`, tear down containers/volumes
+  on QNAP, then remove `photoprism/` from the repo and from the host table in `CLAUDE.md`). Not removing the
+  directory or touching the running containers yet — that requires host-side action and confirmation.
+- Takeaway: decommissioning a service is a multi-step process (data verification → backup → teardown →
+  repo cleanup), not a single file deletion — track it as its own backlog item instead of doing it in one shot.
+
 ### 2026-08-09 — `git push` failed with `Permission denied (publickey)`
 - Context: after committing new files (`CLAUDE.md`, `PLAN.md`, `.claude/`, `.github/agents/`), `git push`
   to `git@github.com:xirad1/IntelliHouse.git` failed.

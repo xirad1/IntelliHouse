@@ -9,7 +9,6 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 |-------------|-------------|------------------|-------------|
 | Immich      | QNAP TS-364 | `immich/`        | running     |
 | Nextcloud   | QNAP TS-364 | `nextcloud/`     | running     |
-| PhotoPrism  | QNAP TS-364 | `photoprism/`    | running     |
 | WordPress   | QNAP TS-364 | `wordpress/`     | running     |
 | XWiki       | QNAP TS-364 | `xwiki/`         | running     |
 | Monitoring  | BananaPi    | `linux/`         | running (cron) |
@@ -19,8 +18,10 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 ## Backlog
 
 ### High priority (security)
-- [ ] Rotate passwords committed in plaintext: `nextcloud/nextcloud.yml`, `photoprism/photoprism.yml`,
-      `wordpress/wordpress.yml` (MariaDB root/user, PhotoPrism admin/auth mode).
+- [ ] Rotate passwords committed in plaintext: `nextcloud/nextcloud.yml`, `wordpress/wordpress.yml`
+      (MariaDB root/user).
+- [ ] Rotate the PhotoPrism admin/MariaDB passwords that were in `photoprism/photoprism.yml` — the file was
+      removed from the repo, but those passwords are still in git history and must be treated as compromised.
 - [ ] Move secrets to per-service `.env` files + add `.env` to `.gitignore`, keep `.env.example`.
 - [ ] Decide whether the git history needs to be cleaned (e.g. `git filter-repo`) — needs consideration,
       requires explicit sign-off from the repo owner before execution (dangerous/irreversible operation).
@@ -37,8 +38,8 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
       name "BananaPi M3" hardcoded in a comment/header, even though the crontab entry in README doesn't specify a host).
 
 ### Maintenance
-- [ ] Align MariaDB versions across services (currently: `mariadb:11.8` in nextcloud, `mariadb:12` in xwiki,
-      different images in photoprism) — check whether the divergence is intentional.
+- [ ] Align MariaDB versions across services (currently: `mariadb:11.8` in nextcloud, `mariadb:12` in xwiki) —
+      check whether the divergence is intentional.
 - [ ] Review healthchecks — some services (`immich`) have a healthcheck, others (`nextcloud`, `xwiki`, `wordpress`) don't.
 
 ## Non-goals (for now)
@@ -49,3 +50,6 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 ## Done
 
 - [x] Created `CLAUDE.md`, `PLAN.md`, `LEARNINGS.md` as the base for working with AI (2026-08-09).
+- [x] Decommissioned PhotoPrism: containers/volumes removed on QNAP, `photoprism/` directory removed from
+      the repo, host table in `CLAUDE.md` updated (2026-08-09). Password rotation for the exposed
+      PhotoPrism/MariaDB credentials is still open — see High priority (security) above.
