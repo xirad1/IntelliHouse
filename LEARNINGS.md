@@ -16,6 +16,21 @@ problem was, what worked/didn't work, and what to remember for the future.
 
 ---
 
+### 2026-08-09 — `git push` failed with `Permission denied (publickey)`
+- Context: after committing new files (`CLAUDE.md`, `PLAN.md`, `.claude/`, `.github/agents/`), `git push`
+  to `git@github.com:xirad1/IntelliHouse.git` failed.
+- Problem: the local machine's `ssh-agent` had no loaded identities (`ssh-add -l` → "The agent has no
+  identities"). After loading the only local key (`ssh-add ~/.ssh/id_rsa`), auth still failed because that
+  key belonged to an unrelated (work) identity, not the `xirad1` GitHub account. The `xirad_github_id_rsa`
+  key mentioned in `README.md` was set up for deploying to the QNAP server, not for pushing from this machine.
+- Solution / decision: added the local machine's public key to GitHub → Settings → SSH and GPG keys for the
+  `xirad1` account, then `ssh -T git@github.com` confirmed `Hi xirad1!` and `git push` succeeded.
+- Takeaway: on a new machine, check `ssh-add -l` and `ssh -T git@github.com` *before* assuming a key
+  works — a loaded key isn't necessarily the right one. Full steps now documented in `CLAUDE.md`
+  ("Pushing to GitHub (SSH setup)"). Also: never paste SSH passphrases or GitHub 2FA/recovery codes into
+  chat — during this troubleshooting a set of GitHub recovery codes was accidentally pasted into the AI
+  chat and had to be treated as compromised and regenerated.
+
 ### 2026-08-09 — Started working with AI files (CLAUDE.md / PLAN.md / LEARNINGS.md)
 - Context: the repo is growing (services: Immich, Nextcloud, PhotoPrism, WordPress, XWiki), with plans
   for Home Assistant (Raspberry Pi) and nginx (BananaPi), directories not yet created.

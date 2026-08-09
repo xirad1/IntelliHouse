@@ -79,6 +79,23 @@ Monitoring (crontab on the host, see [linux/monitoring.sh](linux/monitoring.sh))
 5 * * * * sh /opt/IntelliHouse/linux/monitoring.sh >> /opt/IntelliHouse/linux/monitoring.log 2>&1
 ```
 
+## Pushing to GitHub (SSH setup)
+
+The remote `origin` uses SSH (`git@github.com:xirad1/IntelliHouse.git`), so pushing from a new machine
+requires an SSH key registered on the `xirad1` GitHub account:
+
+1. Check if a key is already loaded: `ssh-add -l`.
+2. If the agent has no identities, load an existing key: `ssh-add ~/.ssh/id_rsa` (enter the passphrase
+   when prompted, directly in the terminal — never paste a passphrase, password, or token into chat/AI tools).
+3. Verify the loaded key belongs to `xirad1`, not an unrelated (e.g. work) identity: `ssh-add -l` shows the
+   comment/fingerprint; `ssh -T git@github.com` should reply `Hi xirad1! You've successfully authenticated...`.
+4. If no matching key exists yet, generate one (`ssh-keygen -t ed25519 -C "<label>"`) and add the public key
+   (`~/.ssh/<key>.pub`) under GitHub → Settings → SSH and GPG keys for the `xirad1` account.
+5. Once authenticated, `git push` works normally.
+
+Never paste private keys, passphrases, tokens, or 2FA/recovery codes into chat with an AI assistant —
+anything typed there must be treated as compromised and rotated.
+
 ## Style and language
 
 - All files in this repository are written in English — keep this language for operational files
