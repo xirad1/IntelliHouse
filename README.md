@@ -77,11 +77,21 @@ Start the stack with Docker Compose:
 
 ## Immich
 
-Start the stack with Docker Compose:
+On QNAP (Container Station), paste the content of `immich/immich.qnap.yml` as-is into the GUI, or run it
+directly if you have shell access:
 
 ```sh
-    docker compose -f /opt/IntelliHouse/immich/immich.yml up -d
+    docker compose -f /opt/IntelliHouse/immich/immich.qnap.yml up -d
 ```
+
+On any other Docker host, use the portable variant instead (no QNAP-specific network):
+
+```sh
+    docker compose -f /opt/IntelliHouse/immich/immich.docker.yml up -d
+```
+
+Both files must stay in sync except for the QNAP network block — run `scripts/check-compose-pairs.sh`
+after editing either one.
 
 ### Environment variables
 

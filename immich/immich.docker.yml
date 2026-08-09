@@ -1,7 +1,4 @@
 name: immich
-networks:
-  qnet-dhcp-eth0-6d6da6:
-    external: true
 services:
   immich-server:
     container_name: immich_server
@@ -22,8 +19,6 @@ services:
       disable: false
     networks:
       default:
-      qnet-dhcp-eth0-6d6da6:
-        mac_address: "02:42:0B:C4:7D:99"
 
   immich-machine-learning:
     container_name: immich_machine_learning
