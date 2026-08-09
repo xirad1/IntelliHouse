@@ -22,10 +22,6 @@ task is checked off, it stays checked off here; longer-form decision history liv
 
 ### Documentation / structure
 - [ ] Add Home Assistant and nginx sections to `README.md` once their directories exist.
-- [x] Add a `.env.example` per service — added to `immich/`, `nextcloud/`, `wordpress/`, `xwiki/` with
-      placeholder values named after the service itself (e.g. `xwiki`, `postgres`), for plain
-      `docker compose` (SSH + CLI) use only; not applicable to QNAP Container Station's "Application"
-      wizard. Added a root `.gitignore` so any real `.env` copied from these templates is never committed.
 
 ### New services to onboard into the repo
 - [ ] Create the `home-assistant/` directory (Raspberry Pi) — configure per the convention in `CLAUDE.md`.
