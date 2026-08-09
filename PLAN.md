@@ -33,14 +33,15 @@ task is checked off, it stays checked off here; longer-form decision history liv
 - [ ] Align MariaDB versions across services (currently: `mariadb:11.8` in nextcloud, `mariadb:12` in xwiki) —
       check whether the divergence is intentional.
 - [ ] Review healthchecks — some services (`immich`) have a healthcheck, others (`nextcloud`, `xwiki`, `wordpress`) don't.
-- [ ] **Design decision (2026-08-09): per-environment compose file pairs.** Services that need to run both
-      on plain Docker and on QNAP Container Station get two full, standalone compose files instead of one
-      file with a conditional network block: `<service>.docker.yml` (portable, no QNAP-only network) and
-      `<service>.qnap.yml` (includes the `qnet-dhcp-eth0-6d6da6` external network + fixed `mac_address`,
-      pasted as-is into the Container Station GUI, which cannot merge multiple compose files or interpolate
-      `${VAR}`). Services with a single environment (e.g. `xwiki.yml`) keep the plain `<service>.yml` name —
-      this is an addition to the existing convention, not a replacement of it. See `CLAUDE.md` for the
-      full naming rule once documented.
+- [ ] **Design decision (2026-08-09): per-environment compose file naming, always suffixed.** Every
+      service's compose file is always named `<service>.<environment>.yml` — never a bare `<service>.yml`
+      — even when it only ever runs on a single host today (e.g. `xwiki/xwiki.qnap.yml`, not
+      `xwiki/xwiki.yml`), so adding a second environment later never requires a rename. Services that need
+      to run on more than one environment get one full, standalone compose file per environment instead of
+      one file with a conditional network block, e.g. `<service>.docker.yml` (portable, no QNAP-only
+      network) + `<service>.qnap.yml` (includes the `qnet-dhcp-eth0-6d6da6` external network + fixed
+      `mac_address`, pasted as-is into the Container Station GUI, which cannot merge multiple compose files
+      or interpolate `${VAR}`). Full naming rule documented in `CLAUDE.md`.
   - [x] Step 1 — Immich: rename `immich/immich.yml` → `immich/immich.qnap.yml` (no functional change, this
         is the file already pasted into Container Station); add new `immich/immich.docker.yml` (same stack,
         no QNAP network block, own default bridge network like `xwiki.yml`); add
@@ -49,6 +50,10 @@ task is checked off, it stays checked off here; longer-form decision history liv
   - [ ] Step 2 — Nextcloud: same treatment (`nextcloud.qnap.yml` + `nextcloud.docker.yml`), reusing the
         same check script.
   - [ ] Step 3 — WordPress: same treatment once the commented-out QNAP network block is revisited.
+  - [ ] Step 4 — XWiki: rename `xwiki/xwiki.yml` → `xwiki/xwiki.qnap.yml` for naming consistency (no
+        `.docker.yml` needed yet — it has no QNAP-only network block to strip, so a portable variant would
+        be identical content; add one only if/when actually needed on another host). Update `README.md`'s
+        XWiki run command accordingly.
   - [ ] Document the naming convention (`<service>.yml` default; `<service>.<environment>.yml` when more
         than one environment is needed) and the `scripts/check-compose-pairs.sh` requirement in `CLAUDE.md`,
         after step 1 proves the pattern out.

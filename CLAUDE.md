@@ -16,23 +16,26 @@ not hardcoded for one specific piece of hardware.
 ## Directory and file conventions
 
 - One service = one directory at the repo root, named after the service (e.g. `immich/`, `nextcloud/`).
-- Compose file named `<service>.yml` inside that directory (e.g. `immich/immich.yml`), not `docker-compose.yml`.
+- Compose file always named `<service>.<environment>.yml`, never bare `<service>.yml` or `docker-compose.yml`
+  — the environment suffix is mandatory. Current environment suffixes: `docker` (portable, plain Docker/Docker Compose, no host-specific network) and `qnap` (QNAP Container Station, includes the QNAP-only external network, 
+  pasted as-is into the GUI — see below). 
+  Others (e.g. `synology`) get added the same way when a service needs to run there.
+- Run `scripts/check-compose-pairs.sh` after editing any file in such a pair — it fails if the pair
+  drifts apart beyond the documented QNAP network block. Example: `immich/immich.docker.yml` +
+  `immich/immich.qnap.yml`.
 - If a service needs a custom image — `Dockerfile` next to the compose file in the same directory (pattern: `wordpress/`).
 - The repo is checked out on the host at `/opt/IntelliHouse` (see [README.md](README.md)) — bind-mount
   paths in compose files assume this prefix or host-specific locations (e.g. `/share/...` on QNAP).
-- The external network `qnet-dhcp-eth0-6d6da6` is specific to QNAP Container Station — when adding
-  services on other hosts (RPi, BananaPi) use an analogous but separate network named for that host,
-  do not copy the name 1:1.
 
 ## How to add a new service
 
 1. Create a `<service>/` directory at the repo root.
-2. Add `<service>.yml` (docker compose) + an optional `Dockerfile`.
+2. Add a compose file per environment according Directory and file conventions
 3. Keep secrets and installation-specific environment values in a `.env` file next to the compose file
    (the `.env` file **must not** be committed to git — see the Secrets section), never hardcoded in `.yml`.
 4. Add a short section to [README.md](README.md) with run instructions (pattern: the WordPress section).
-5. Update the host table in this file if the service runs on a new host.
-6. Validate the file before committing: `docker compose -f <service>/<service>.yml config`.
+5. Validate the file(s) before committing: `docker compose -f <service>/<service>.<environment>.yml config`
+   (all environment files present, plus `scripts/check-compose-pairs.sh` if there's more than one).
 
 ## Secrets and security (important)
 
@@ -40,31 +43,7 @@ not hardcoded for one specific piece of hardware.
   interpolation (`${MY_VARIABLE}`) so the repo only ever contains a sanitized template — see below for how
   the real value reaches each host.
 - If you need to commit example configuration, use `.env.example` with placeholders, never real values.
-- Passwords that already made it into the repo (even after removal from the current file version) must
-  be treated as **compromised** — rotate them on the service side, not just clean up the file.
 - Do not generate or suggest internal URLs/addresses beyond what already exists in the repo.
-
-### How `${VAR}` placeholders get real values per environment
-
-The repo's `.yml` files are a **sanitized template** — they never contain real secrets. How the real
-value is supplied depends on how a given host runs the stack:
-
-- **Plain Docker host (SSH + CLI, e.g. via `docker compose -f ... up -d`):** use a `.env` file next to the
-  `.yml` (add it to `.gitignore`), or export real environment variables before running the command.
-  `docker compose` interpolates `${VAR}` automatically from either source.
-- **QNAP Container Station, "Container" wizard (single image, no compose):** this wizard has its own
-  **Environment Variables** UI section — use it the same way as a `.env` file.
-- **QNAP Container Station, "Application" wizard (docker-compose-based stacks, used for Nextcloud/WordPress):**
-  this wizard does **not** support `${VAR}` interpolation or a separate env-vars step — it only accepts a
-  fully literal YAML. In this case:
-  1. Keep the repo's `.yml` with `${VAR}` placeholders as the source-of-truth template.
-  2. When creating/editing the Application in Container Station, paste a copy of the YAML with the
-     placeholders manually replaced by the real, freshly generated values, directly in the Container
-     Station editor.
-  3. That filled-in copy only ever lives inside Container Station's own config — it must never be pasted
-     back into the repo or committed to git.
-  4. Whenever the compose structure changes in the repo (new volume, new env var, etc.), manually reapply
-     the same structural change to the live version in Container Station, re-substituting real values.
 
 ## Operations / commands
 
@@ -75,12 +54,12 @@ docker build -t wordpress:ldap /opt/IntelliHouse/wordpress
 
 Start a service:
 ```sh
-docker compose -f /opt/IntelliHouse/<service>/<service>.yml up -d
+docker compose -f /opt/IntelliHouse/<service>/<service>.<environment>.yml up -d
 ```
 
 Validate a compose file without running it:
 ```sh
-docker compose -f <service>/<service>.yml config
+docker compose -f <service>/<service>.<environment>.yml config
 ```
 
 Monitoring (crontab on the host, see [linux/monitoring.sh](linux/monitoring.sh)):
