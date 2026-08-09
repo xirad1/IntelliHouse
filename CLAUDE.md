@@ -47,15 +47,35 @@ More hosts may be added in the future — do not design solutions "for QNAP" onl
 
 ## Secrets and security (important)
 
-- **Known issue:** some existing `.yml` files contain hardcoded plaintext passwords
-  (e.g. `nextcloud/nextcloud.yml`, `wordpress/wordpress.yml`), and these
-  are already part of the git history. This is technical debt to pay down — see [PLAN.md](PLAN.md).
-- **Do not hardcode** new secrets in `.yml` files. Use variables from a `.env` file via compose
-  interpolation (`${MY_VARIABLE}`) and add `.env` to `.gitignore`.
+- **Do not hardcode** new secrets in `.yml` files committed to this repo. Reference them via compose
+  interpolation (`${MY_VARIABLE}`) so the repo only ever contains a sanitized template — see below for how
+  the real value reaches each host.
 - If you need to commit example configuration, use `.env.example` with placeholders, never real values.
 - Passwords that already made it into the repo (even after removal from the current file version) must
   be treated as **compromised** — rotate them on the service side, not just clean up the file.
 - Do not generate or suggest internal URLs/addresses beyond what already exists in the repo.
+
+### How `${VAR}` placeholders get real values per environment
+
+The repo's `.yml` files are a **sanitized template** — they never contain real secrets. How the real
+value is supplied depends on how a given host runs the stack:
+
+- **Plain Docker host (SSH + CLI, e.g. via `docker compose -f ... up -d`):** use a `.env` file next to the
+  `.yml` (add it to `.gitignore`), or export real environment variables before running the command.
+  `docker compose` interpolates `${VAR}` automatically from either source.
+- **QNAP Container Station, "Container" wizard (single image, no compose):** this wizard has its own
+  **Environment Variables** UI section — use it the same way as a `.env` file.
+- **QNAP Container Station, "Application" wizard (docker-compose-based stacks, used for Nextcloud/WordPress):**
+  this wizard does **not** support `${VAR}` interpolation or a separate env-vars step — it only accepts a
+  fully literal YAML. In this case:
+  1. Keep the repo's `.yml` with `${VAR}` placeholders as the source-of-truth template.
+  2. When creating/editing the Application in Container Station, paste a copy of the YAML with the
+     placeholders manually replaced by the real, freshly generated values, directly in the Container
+     Station editor.
+  3. That filled-in copy only ever lives inside Container Station's own config — it must never be pasted
+     back into the repo or committed to git.
+  4. Whenever the compose structure changes in the repo (new volume, new env var, etc.), manually reapply
+     the same structural change to the live version in Container Station, re-substituting real values.
 
 ## Operations / commands
 

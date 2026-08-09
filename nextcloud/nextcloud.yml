@@ -15,10 +15,10 @@ services:
       - nx_db_data:/var/lib/mysql
     restart: always
     environment:
-      - MARIADB_ROOT_PASSWORD=***REMOVED-ROTATED-SECRET***
+      - MARIADB_ROOT_PASSWORD=${NEXTCLOUD_DB_ROOT_PASSWORD}
       - MARIADB_DATABASE=nextcloud
       - MARIADB_USER=nextcloud
-      - MARIADB_PASSWORD=***REMOVED-ROTATED-SECRET***
+      - MARIADB_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
     networks:
       default:
     expose:
@@ -35,7 +35,7 @@ services:
       - NEXTCLOUD_TRUSTED_DOMAINS=nx.skarbnica.site
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
-      - MYSQL_PASSWORD=***REMOVED-ROTATED-SECRET***
+      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
       - MYSQL_HOST=db
     networks:
       default:

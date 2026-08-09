@@ -16,6 +16,35 @@ problem was, what worked/didn't work, and what to remember for the future.
 
 ---
 
+### 2026-08-09 — Correction: Container Station "Application" wizard has no env-var support
+- Context: follow-up to the entry below, after the owner checked the actual QNAP Container Station GUI.
+- Problem: the previous entry assumed the "Environment Variables" GUI section is available when creating
+  a docker-compose-based stack. In reality, that section only exists in the **"Container"** wizard
+  (single image, no compose). The **"Application"** wizard (used for Nextcloud/WordPress, docker-compose
+  based) only accepts a fully literal YAML with no variable interpolation step.
+- Solution / decision: kept option C — the repo's `.yml` files stay as sanitized `${VAR}` templates; for
+  QNAP, the real secret values are substituted manually only inside the Container Station YAML editor for
+  that Application (never written back to git). For any future non-QNAP host, use a real `.env` file or
+  exported environment variables instead. Documented in `CLAUDE.md`
+  ("How `${VAR}` placeholders get real values per environment"). No change needed on the QNAP side today.
+- Takeaway: don't assume a GUI capability without the owner confirming it in their actual version — verify
+  before documenting a workflow as fact, and be ready to correct it in this log rather than silently editing
+  history.
+
+### 2026-08-09 — Moved nextcloud/wordpress secrets to QNAP Container Station env vars
+- Context: owner manages these two stacks through the Container Station GUI, which has an
+  "Environment Variables" section in the application creation/edit wizard.
+- Problem: `nextcloud/nextcloud.yml` and `wordpress/wordpress.yml` had MariaDB/WordPress passwords
+  hardcoded in plaintext.
+- Solution / decision: replaced the hardcoded values with `${VAR}` compose placeholders
+  (`NEXTCLOUD_DB_ROOT_PASSWORD`, `NEXTCLOUD_DB_PASSWORD`, `WORDPRESS_DB_ROOT_PASSWORD`,
+  `WORDPRESS_DB_PASSWORD`); the owner sets the real values directly in the Container Station GUI per
+  application, so they never need to exist in a file on disk or in the repo. Documented the GUI steps
+  in `CLAUDE.md` ("Setting environment variables in QNAP Container Station").
+- Takeaway: on QNAP, Container Station's own "Environment Variables" UI is a valid alternative to a
+  `.env` file for compose variable interpolation — no extra tooling needed. Old password values are
+  still compromised in git history regardless of this change; rotation is a separate step (see `PLAN.md`).
+
 ### 2026-08-09 — PhotoPrism decommission completed
 - Context: follow-up to the decision below to drop PhotoPrism in favor of Immich.
 - Problem: `photoprism/` still existed in the repo and in `CLAUDE.md`'s host table after the owner

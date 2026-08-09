@@ -10,10 +10,10 @@ services:
       - db_data:/var/lib/mysql
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=***REMOVED-ROTATED-SECRET***
+      - MYSQL_ROOT_PASSWORD=${WORDPRESS_DB_ROOT_PASSWORD}
       - MYSQL_DATABASE=wp
       - MYSQL_USER=wp_skarbnica
-      - MYSQL_PASSWORD=***REMOVED-ROTATED-SECRET***
+      - MYSQL_PASSWORD=${WORDPRESS_DB_PASSWORD}
     networks:
       default:
     expose:
@@ -29,7 +29,7 @@ services:
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wp_skarbnica
-      WORDPRESS_DB_PASSWORD: ***REMOVED-ROTATED-SECRET***
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
       WORDPRESS_DB_NAME: wp
       WORDPRESS_DEBUG: "1"
       WORDPRESS_CONFIG_EXTRA: |

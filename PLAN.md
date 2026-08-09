@@ -18,11 +18,12 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 ## Backlog
 
 ### High priority (security)
-- [ ] Rotate passwords committed in plaintext: `nextcloud/nextcloud.yml`, `wordpress/wordpress.yml`
-      (MariaDB root/user).
+- [ ] Rotate the passwords that were previously hardcoded in `nextcloud/nextcloud.yml` and
+      `wordpress/wordpress.yml` (MariaDB root/user) — the `.yml` files now use `${VAR}` placeholders, but the
+      old values are still in git history and must be treated as compromised until replaced with new ones
+      in the QNAP Container Station Environment Variables UI.
 - [ ] Rotate the PhotoPrism admin/MariaDB passwords that were in `photoprism/photoprism.yml` — the file was
       removed from the repo, but those passwords are still in git history and must be treated as compromised.
-- [ ] Move secrets to per-service `.env` files + add `.env` to `.gitignore`, keep `.env.example`.
 - [ ] Decide whether the git history needs to be cleaned (e.g. `git filter-repo`) — needs consideration,
       requires explicit sign-off from the repo owner before execution (dangerous/irreversible operation).
 
@@ -53,3 +54,9 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 - [x] Decommissioned PhotoPrism: containers/volumes removed on QNAP, `photoprism/` directory removed from
       the repo, host table in `CLAUDE.md` updated (2026-08-09). Password rotation for the exposed
       PhotoPrism/MariaDB credentials is still open — see High priority (security) above.
+- [x] Replaced hardcoded passwords in `nextcloud/nextcloud.yml` and `wordpress/wordpress.yml` with
+      `${VAR}` placeholders (`NEXTCLOUD_DB_ROOT_PASSWORD`, `NEXTCLOUD_DB_PASSWORD`,
+      `WORDPRESS_DB_ROOT_PASSWORD`, `WORDPRESS_DB_PASSWORD`). The repo keeps these as a sanitized
+      template; on QNAP (Container Station "Application" wizard has no env-var/`.env` support) the real
+      values are substituted manually only in the Container Station YAML editor, never in git — see
+      `CLAUDE.md` ("How `${VAR}` placeholders get real values per environment") (2026-08-09).
