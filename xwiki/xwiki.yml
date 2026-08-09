@@ -1,0 +1,44 @@
+version: '2'
+networks:
+  bridge:
+    driver: bridge
+services:
+  web:
+    image: "xwiki:18-mariadb-tomcat"
+    container_name: xwiki-mariadb-tomcat-web-green
+    depends_on:
+      - db
+    ports:
+      - "49154:8080"
+    environment:
+      - XWIKI_VERSION=18.6.0
+      - DB_USER=xwiki
+      - DB_PASSWORD=xwiki
+      - DB_HOST=xwiki-mariadb-db-green
+    volumes:
+      - xwiki-web-green:/usr/local/xwiki
+    networks:
+      - bridge
+  db:
+    image: "mariadb:12"
+    container_name: xwiki-mariadb-db-green
+    volumes:
+      - ./xwiki.cnf:/etc/mysql/conf.d/xwiki.cnf
+      - xwiki-mariadb-green:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=xwiki
+      - MYSQL_USER=xwiki
+      - MYSQL_PASSWORD=xwiki
+      - MYSQL_DATABASE=xwiki
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_DISABLE_UPGRADE_BACKUP=1
+    networks:
+      - bridge
+volumes:
+  xwiki-mariadb-green: 
+    external: true
+    name: xwiki-mariadb-green
+  xwiki-web-green:
+    external: true
+    name: xwiki-web-green
