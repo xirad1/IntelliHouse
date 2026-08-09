@@ -16,6 +16,38 @@ problem was, what worked/didn't work, and what to remember for the future.
 
 ---
 
+### 2026-08-09 — Rotated DB passwords and cleaned git history of exposed secrets
+- Context: nextcloud/wordpress MariaDB passwords had already been rotated live on QNAP; PhotoPrism was
+  already fully decommissioned. Owner gave explicit sign-off to clean git history (previously an open,
+  "needs sign-off" item in PLAN.md).
+- Problem: the old plaintext values (a root password and a user password, found to be **reused across
+  both nextcloud and wordpress**) were still present in `main`'s git history, and a separate abandoned
+  branch `feat/photoprism` (local + `origin/feat/photoprism`) held its own old PhotoPrism secrets never
+  covered by any later fix.
+- Solution / decision:
+  1. Committed and pushed the pending `${VAR}` placeholder replacement (previously only staged locally) so
+     current `HEAD` no longer contained plaintext.
+  2. Made a full local backup (`tar` of the working copy) before any rewrite.
+  3. Deleted `feat/photoprism` locally and on GitHub (no longer needed; superseded by `main`).
+  4. Installed `git-filter-repo` (via Homebrew) and ran it once with both `--path photoprism/photoprism.yml
+     --invert-paths` (drop the file and its content from all of history — service is gone) and
+     `--replace-text` (redact the two rotated plaintext secret strings anywhere they appeared in
+     nextcloud/wordpress history).
+  5. Verified 0 remaining matches for the old secret strings across `git log --all -p`, re-added the
+     `origin` remote (filter-repo removes it as a safety guard), force-pushed the rewritten `main`, then
+     ran `git reflog expire` + `git gc --prune=now --aggressive` locally.
+- Takeaway:
+  - Always land any pending "remove hardcoded secret" commit **before** rewriting history — otherwise
+    `HEAD` itself still has the plaintext.
+  - Check for stray branches (local *and* remote) before declaring history "clean" — a rewrite of `main`
+    alone doesn't touch other refs.
+  - Password reuse across services was only caught here because the plaintext values were compared
+    side-by-side during redaction — worth a periodic manual check going forward, since unique secrets
+    per service is not yet enforced by any tooling in this repo.
+  - No other clone of this repo existed, so the force-push had no coordination cost this time; if that
+    changes, every other clone (e.g. `/opt/IntelliHouse` on a host) must be re-cloned or hard-reset after
+    a history rewrite — `git pull` will not work.
+
 ### 2026-08-09 — Correction: Container Station "Application" wizard has no env-var support
 - Context: follow-up to the entry below, after the owner checked the actual QNAP Container Station GUI.
 - Problem: the previous entry assumed the "Environment Variables" GUI section is available when creating

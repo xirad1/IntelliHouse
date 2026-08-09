@@ -18,14 +18,9 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 ## Backlog
 
 ### High priority (security)
-- [ ] Rotate the passwords that were previously hardcoded in `nextcloud/nextcloud.yml` and
-      `wordpress/wordpress.yml` (MariaDB root/user) — the `.yml` files now use `${VAR}` placeholders, but the
-      old values are still in git history and must be treated as compromised until replaced with new ones
-      in the QNAP Container Station Environment Variables UI.
-- [ ] Rotate the PhotoPrism admin/MariaDB passwords that were in `photoprism/photoprism.yml` — the file was
-      removed from the repo, but those passwords are still in git history and must be treated as compromised.
-- [ ] Decide whether the git history needs to be cleaned (e.g. `git filter-repo`) — needs consideration,
-      requires explicit sign-off from the repo owner before execution (dangerous/irreversible operation).
+- [ ] Rotate the PhotoPrism admin/MariaDB passwords that were in `photoprism/photoprism.yml` — the
+      service is decommissioned and the file's history has been purged from git (see Done), but if any of
+      those old values are reused elsewhere, treat them as compromised.
 
 ### Documentation / structure
 - [ ] Populate `docs/` (currently empty) — network architecture, port map, host diagram.
@@ -60,3 +55,8 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
       template; on QNAP (Container Station "Application" wizard has no env-var/`.env` support) the real
       values are substituted manually only in the Container Station YAML editor, never in git — see
       `CLAUDE.md` ("How `${VAR}` placeholders get real values per environment") (2026-08-09).
+- [x] Rotated the live Nextcloud/WordPress MariaDB passwords on QNAP, then rewrote `main`'s git history
+      with `git filter-repo` to drop `photoprism/photoprism.yml` entirely and redact the old rotated
+      plaintext values wherever they appeared; force-pushed the cleaned history to `origin/main` and
+      deleted the stale `feat/photoprism` branch (local + remote), which held separate old PhotoPrism
+      secrets. See `LEARNINGS.md` (2026-08-09).
