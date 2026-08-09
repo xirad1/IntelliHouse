@@ -47,16 +47,16 @@ task is checked off, it stays checked off here; longer-form decision history liv
         no QNAP network block, own default bridge network like `xwiki.yml`); add
         `scripts/check-compose-pairs.sh` (diffs the pair, ignoring the documented network-block lines,
         non-zero exit on unexpected drift); update `README.md` Immich section with both run commands.
-  - [ ] Step 2 — Nextcloud: same treatment (`nextcloud.qnap.yml` + `nextcloud.docker.yml`), reusing the
+  - [x] Step 2 — Nextcloud: same treatment (`nextcloud.qnap.yml` + `nextcloud.docker.yml`), reusing the
         same check script.
-  - [ ] Step 3 — WordPress: same treatment once the commented-out QNAP network block is revisited.
-  - [ ] Step 4 — XWiki: rename `xwiki/xwiki.yml` → `xwiki/xwiki.qnap.yml` for naming consistency (no
+  - [x] Step 3 — WordPress: same treatment (`wordpress.qnap.yml` + `wordpress.docker.yml`). The
+        `qnet-dhcp-eth0-6d6da6` block stays commented out (disabled) in both files, unchanged from before —
+        owner decided this is a pure rename + split, not the moment to reactivate it.
+  - [x] Step 4 — XWiki: rename `xwiki/xwiki.yml` → `xwiki/xwiki.qnap.yml` for naming consistency (no
         `.docker.yml` needed yet — it has no QNAP-only network block to strip, so a portable variant would
         be identical content; add one only if/when actually needed on another host). Update `README.md`'s
         XWiki run command accordingly.
-  - [ ] Document the naming convention (`<service>.yml` default; `<service>.<environment>.yml` when more
-        than one environment is needed) and the `scripts/check-compose-pairs.sh` requirement in `CLAUDE.md`,
-        after step 1 proves the pattern out.
+\
 
 ## Non-goals (for now)
 

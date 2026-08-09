@@ -1,4 +1,6 @@
 version: '2'
+# QNAP-only today; uses its own local bridge network, no host-specific dependency.
+# If XWiki ever needs a portable variant too, add xwiki.docker.yml (identical content).
 networks:
   bridge:
     driver: bridge

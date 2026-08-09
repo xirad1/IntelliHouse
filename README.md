@@ -41,7 +41,8 @@ Add to crontab line similar to:
 ```
 
 ## WordPress
-Assumption: both files exist in the `/opt/IntelliHouse/wordpress/` folder — `Dockerfile` and `wordpress.yml`.
+Assumption: `Dockerfile`, `wordpress.qnap.yml` and `wordpress.docker.yml` exist in the
+`/opt/IntelliHouse/wordpress/` folder.
 
 1. Build the image from the `wordpress/` directory:
 
@@ -49,11 +50,20 @@ Assumption: both files exist in the `/opt/IntelliHouse/wordpress/` folder — `D
     docker build -t wordpress:ldap /opt/IntelliHouse/wordpress
 ```
 
-2. Start container with Docker Compose:
+2. Start container with Docker Compose. On QNAP (Container Station), paste the content of
+   `wordpress/wordpress.qnap.yml` as-is into the GUI, or run it directly if you have shell access:
 
 ```sh
-    docker compose -f /opt/IntelliHouse/wordpress/wordpress.yml up -d
+    docker compose -f /opt/IntelliHouse/wordpress/wordpress.qnap.yml up -d
 ```
+
+   On any other Docker host, use the portable variant instead:
+
+```sh
+    docker compose -f /opt/IntelliHouse/wordpress/wordpress.docker.yml up -d
+```
+
+   Both files must stay in sync — run `scripts/check-compose-pairs.sh` after editing either one.
 
 The stack will start with WordPress running the php-ldap module.
 
@@ -64,11 +74,21 @@ The stack will start with WordPress running the php-ldap module.
 
 ## Nextcloud
 
-Start the stack with Docker Compose:
+On QNAP (Container Station), paste the content of `nextcloud/nextcloud.qnap.yml` as-is into the GUI, or
+run it directly if you have shell access:
 
 ```sh
-    docker compose -f /opt/IntelliHouse/nextcloud/nextcloud.yml up -d
+    docker compose -f /opt/IntelliHouse/nextcloud/nextcloud.qnap.yml up -d
 ```
+
+On any other Docker host, use the portable variant instead (no QNAP-specific network):
+
+```sh
+    docker compose -f /opt/IntelliHouse/nextcloud/nextcloud.docker.yml up -d
+```
+
+Both files must stay in sync except for the QNAP network block — run `scripts/check-compose-pairs.sh`
+after editing either one.
 
 ### Environment variables
 
@@ -102,7 +122,7 @@ after editing either one.
 Start the stack with Docker Compose:
 
 ```sh
-    docker compose -f /opt/IntelliHouse/xwiki/xwiki.yml up -d
+    docker compose -f /opt/IntelliHouse/xwiki/xwiki.qnap.yml up -d
 ```
 
 ### Environment variables

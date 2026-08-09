@@ -1,6 +1,3 @@
-networks:
-  qnet-dhcp-eth0-6d6da6:
-    external: true
 services:
   db:
     image: mariadb:11.8
@@ -39,8 +36,6 @@ services:
       - MYSQL_HOST=db
     networks:
       default:
-      qnet-dhcp-eth0-6d6da6:
-        mac_address: "02:42:0C:98:01:66"
 volumes:
   nx_db_data:
   nx_data:

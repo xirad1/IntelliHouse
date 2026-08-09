@@ -1,3 +1,4 @@
+# QNAP Container Station variant, pasted as-is into the GUI. For plain Docker use wordpress.docker.yml.
 #networks:
 #  qnet-dhcp-eth0-6d6da6:
 #    external: true

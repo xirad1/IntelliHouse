@@ -1,0 +1,47 @@
+# QNAP Container Station variant, pasted as-is into the GUI. For plain Docker use nextcloud.docker.yml.
+networks:
+  qnet-dhcp-eth0-6d6da6:
+    external: true
+services:
+  db:
+    image: mariadb:11.8
+    command: [
+      '--default-authentication-plugin=mysql_native_password',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_general_ci',
+      '--transaction_isolation=READ-COMMITTED',
+      '--binlog_format=ROW'
+    ]
+    volumes:
+      - nx_db_data:/var/lib/mysql
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=${NEXTCLOUD_DB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=nextcloud
+      - MARIADB_USER=nextcloud
+      - MARIADB_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
+    networks:
+      default:
+    expose:
+      - 3306
+      - 33060
+    ports:
+      - 43301:3306
+  nextcloud:
+    image: nextcloud:33
+    volumes:
+      - nx_data:/var/www/html
+    restart: always
+    environment:
+      - NEXTCLOUD_TRUSTED_DOMAINS=nx.skarbnica.site
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
+      - MYSQL_HOST=db
+    networks:
+      default:
+      qnet-dhcp-eth0-6d6da6:
+        mac_address: "02:42:0C:98:01:66"
+volumes:
+  nx_db_data:
+  nx_data:
