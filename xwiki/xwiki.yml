@@ -13,7 +13,7 @@ services:
     environment:
       - XWIKI_VERSION=18.6.0
       - DB_USER=xwiki
-      - DB_PASSWORD=xwiki
+      - DB_PASSWORD=${XWIKI_DB_PASSWORD}
       - DB_HOST=xwiki-mariadb-db-green
     volumes:
       - xwiki-web-green:/usr/local/xwiki
@@ -27,9 +27,9 @@ services:
       - xwiki-mariadb-green:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      - MYSQL_ROOT_PASSWORD=xwiki
+      - MYSQL_ROOT_PASSWORD=${XWIKI_DB_ROOT_PASSWORD}
       - MYSQL_USER=xwiki
-      - MYSQL_PASSWORD=xwiki
+      - MYSQL_PASSWORD=${XWIKI_DB_PASSWORD}
       - MYSQL_DATABASE=xwiki
       - MARIADB_AUTO_UPGRADE=1
       - MARIADB_DISABLE_UPGRADE_BACKUP=1

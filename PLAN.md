@@ -18,12 +18,11 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 ## Backlog
 
 ### High priority (security)
-- [ ] Rotate the PhotoPrism admin/MariaDB passwords that were in `photoprism/photoprism.yml` — the
-      service is decommissioned and the file's history has been purged from git (see Done), but if any of
-      those old values are reused elsewhere, treat them as compromised.
+- [ ] Immich and XWiki now use `${VAR}` placeholders (see Done) — the live QNAP deployments still need the
+      real `IMMICH_DB_PASSWORD`, `XWIKI_DB_ROOT_PASSWORD`, `XWIKI_DB_PASSWORD` values set/rotated, following
+      the same per-environment mechanism as Nextcloud/WordPress (see `CLAUDE.md`).
 
 ### Documentation / structure
-- [ ] Populate `docs/` (currently empty) — network architecture, port map, host diagram.
 - [ ] Add Home Assistant and nginx sections to `README.md` once their directories exist.
 - [ ] Consider adding a `.env.example` per service as a template for new deployments.
 
@@ -47,8 +46,8 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
 
 - [x] Created `CLAUDE.md`, `PLAN.md`, `LEARNINGS.md` as the base for working with AI (2026-08-09).
 - [x] Decommissioned PhotoPrism: containers/volumes removed on QNAP, `photoprism/` directory removed from
-      the repo, host table in `CLAUDE.md` updated (2026-08-09). Password rotation for the exposed
-      PhotoPrism/MariaDB credentials is still open — see High priority (security) above.
+      the repo, host table in `CLAUDE.md` updated (2026-08-09). Password rotation was later dropped from
+      the backlog once history was purged with `git filter-repo` — see below.
 - [x] Replaced hardcoded passwords in `nextcloud/nextcloud.yml` and `wordpress/wordpress.yml` with
       `${VAR}` placeholders (`NEXTCLOUD_DB_ROOT_PASSWORD`, `NEXTCLOUD_DB_PASSWORD`,
       `WORDPRESS_DB_ROOT_PASSWORD`, `WORDPRESS_DB_PASSWORD`). The repo keeps these as a sanitized
@@ -60,3 +59,12 @@ check off completed tasks, add new ones, don't delete history (the "Done" sectio
       plaintext values wherever they appeared; force-pushed the cleaned history to `origin/main` and
       deleted the stale `feat/photoprism` branch (local + remote), which held separate old PhotoPrism
       secrets. See `LEARNINGS.md` (2026-08-09).
+- [x] Added a "Secrets / environment variables" section to `README.md` plus an "Environment variables"
+      list under the WordPress and (newly added) Nextcloud sections; found Immich and XWiki still hardcode
+      secrets with no `${VAR}` — logged as new items under High priority (security) above (2026-08-09).
+- [x] Replaced hardcoded secrets in `immich/immich.yml` (`POSTGRES_PASSWORD`) and `xwiki/xwiki.yml`
+      (`MYSQL_ROOT_PASSWORD`, `MYSQL_PASSWORD`, `DB_PASSWORD`) with `${VAR}` placeholders
+      (`IMMICH_DB_PASSWORD`, `XWIKI_DB_ROOT_PASSWORD`, `XWIKI_DB_PASSWORD`); added matching README.md
+      sections (run command + Environment variables) for Immich and XWiki. Removed the empty `docs/`
+      directory and dropped the now-unneeded PhotoPrism password-rotation backlog item (service fully
+      decommissioned and purged from git history) (2026-08-09).

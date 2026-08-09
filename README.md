@@ -25,6 +25,14 @@ There are several ways to extract repository. As a result files should be placed
 
 Adjust according your needs
 
+## Secrets / environment variables
+
+Compose files in this repo reference secrets as `${VAR}` placeholders — the `.yml` files themselves never
+contain real passwords. How a real value reaches a given host depends on how that host runs the stack
+(plain `docker compose` with a `.env` file/exported env vars, or the QNAP Container Station GUI); see
+[CLAUDE.md](CLAUDE.md#how-var-placeholders-get-real-values-per-environment) for the full explanation.
+Each service section below lists the `${VAR}` names it needs — set them before starting that service.
+
 ## Linux
 ### Monitoring
 Add to crontab line similar to:
@@ -48,3 +56,46 @@ Assumption: both files exist in the `/opt/IntelliHouse/wordpress/` folder — `D
 ```
 
 The stack will start with WordPress running the php-ldap module.
+
+### Environment variables
+
+- `WORDPRESS_DB_ROOT_PASSWORD` — MariaDB root password.
+- `WORDPRESS_DB_PASSWORD` — password for the `wp_skarbnica` MariaDB user, also used by WordPress itself.
+
+## Nextcloud
+
+Start the stack with Docker Compose:
+
+```sh
+    docker compose -f /opt/IntelliHouse/nextcloud/nextcloud.yml up -d
+```
+
+### Environment variables
+
+- `NEXTCLOUD_DB_ROOT_PASSWORD` — MariaDB root password.
+- `NEXTCLOUD_DB_PASSWORD` — password for the `nextcloud` MariaDB user, also used by the Nextcloud container itself.
+
+## Immich
+
+Start the stack with Docker Compose:
+
+```sh
+    docker compose -f /opt/IntelliHouse/immich/immich.yml up -d
+```
+
+### Environment variables
+
+- `IMMICH_DB_PASSWORD` — password for the `postgres` user in the bundled Postgres database.
+
+## XWiki
+
+Start the stack with Docker Compose:
+
+```sh
+    docker compose -f /opt/IntelliHouse/xwiki/xwiki.yml up -d
+```
+
+### Environment variables
+
+- `XWIKI_DB_ROOT_PASSWORD` — MariaDB root password.
+- `XWIKI_DB_PASSWORD` — password for the `xwiki` MariaDB user, used by both the `db` and `web` services.
