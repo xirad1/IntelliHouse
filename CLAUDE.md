@@ -7,22 +7,11 @@ If anything here is out of date, update this file together with the code change.
 ## What this project is
 
 This repository holds **configuration and Docker files (docker-compose / Dockerfile)** for the
-IntelliHouse home infrastructure. It is not a source-code application — it is config-as-code for
+IntelliHouse home services. It is not a source-code application — it is config-as-code for
 services running on several physical hosts.
 
 Do not assume everything runs on a single device. Solutions must be general (portable between hosts),
 not hardcoded for one specific piece of hardware.
-
-## Infrastructure map (hosts)
-
-| Host               | Role                                    | Directory(ies) in repo                          |
-|--------------------|------------------------------------------|-------------------------------------------------|
-| QNAP TS-364        | Main host, Container Station (Docker)   | `immich/`, `nextcloud/`, `wordpress/`, `xwiki/` |
-| Raspberry Pi       | Home Assistant OS                       | not yet created — to be added (e.g. `home-assistant/`) |
-| BananaPi           | nginx (reverse proxy) + `linux/monitoring.sh` | `linux/` (monitoring script), directory for nginx to be created (e.g. `nginx/`) |
-
-More hosts may be added in the future — do not design solutions "for QNAP" only, follow the
-"one directory per service" pattern described below instead.
 
 ## Directory and file conventions
 

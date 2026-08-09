@@ -16,6 +16,7 @@ Step-by-step procedure for adding a new feature to the IntelliHouse project.
 - Identify which layer(s) the feature touches (app / dockerfile / configuration)
 - List all files that need creating or modifying
 - Define the interfaces between layers
+- be assertive about the design, don't agree to a design that is obviously wrong or will cause problems later
 - Update `PLAN.md` with the design decision
 
 ### 2. Write failing tests (tester)
